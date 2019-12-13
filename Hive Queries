@@ -1,0 +1,43 @@
+data = LOAD '/Global_Terrorism.csv' using
+org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','NOCHANGE','SKIP_INPUT_HEADER') as (AttackYear:double, TargetCountry:chararray, TargetCity:chararray, Latitude:chararray, Longitude:chararray, Success:int, AttackType:chararray, TargetType:chararray, TerroristGroup:chararray, WeaponType: chararray, Fatalities:int);
+
+Store data into '/Output/' using PigStorage(',');
+
+hive > create external table test (AttackYear double, TargetCountry string, TargetCity string, Latitude float, Longitude float, Success int AttackType string, TargetType string, TerroristGroup string, WeaponType string, Fatalities int) row format delimited fields terminated by ',';
+
+hive >LOAD DATA INPATH '/Output' OVERWRITE INTO TABLE Test;
+
+#Using Hive we queried the results
+1. Most terror prone country
+
+INSERT OVERWRITE DIRECTORY '/mostterrorpronecountry' select TargetCountry, count(Success) as most from test where Success = 1 group by TargetCountry order by most desc limit 10;
+
+#command to copy from hive to home directory
+hadoop fs -copyToLocal /mostterrorpronecountry /home/adityagpt30
+
+2. Most terror prone city
+
+INSERT OVERWRITE DIRECTORY '/mostterrorpronecity' select TargetCity, count(Success) as most from test where Success = 1 group by TargetCity order by most desc limit 10;
+
+hadoop fs -copyToLocal /mostterrorpronecity /home/adityagpt30
+
+3. Most active terrorism group
+
+INSERT OVERWRITE DIRECTORY '/mostactiveterroristgroup' select TerroristGroup, count(Success) as most from test where Success = 1 group by TerroristGroup order by most desc limit 10;
+
+hadoop fs -copyToLocal /mostactiveterroristgroup /home/adityagpt30
+
+4. Most common weapon type used
+
+INSERT OVERWRITE DIRECTORY '/mostcommonweapontype' select WeaponType, count(Success) as most from test where Success = 1 group by WeaponType order by most desc limit 10;
+
+hadoop fs -copyToLocal /mostcommonweapontype /home/adityagpt30
+
+5. Most common target type
+
+INSERT OVERWRITE DIRECTORY '/mostcommontargettype' select TargetType, count(Success) as most from test where Success = 1 group by TargetType order by most desc limit 10;
+
+hadoop fs -copyToLocal /mostcommontargettype /home/adityagpt30
+
+
+
