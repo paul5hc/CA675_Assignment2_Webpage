@@ -1,5 +1,5 @@
 data = LOAD '/Global_Terrorism.csv' using
-org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','NOCHANGE','SKIP_INPUT_HEADER') as (AttackYear:double, TargetCountry:chararray, TargetCity:chararray, Latitude:chararray, Longitude:chararray, Success:int, AttackType:chararray, TargetType:chararray, TerroristGroup:chararray, WeaponType: chararray, Fatalities:int);
+org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','NOCHANGE','SKIP_INPUT_HEADER') as (AttackYear:double, TargetCountry:chararray, TargetCity:chararray, Latitude:chararray, Longitude:chararray, Success:int, AttackType:chararray, TargetType:chararray, TerroristGroup:chararray, WeaponType:chararray, Fatalities:int);
 
 Store data into '/Output/' using PigStorage(',');
 
@@ -12,7 +12,7 @@ hive >LOAD DATA INPATH '/Output' OVERWRITE INTO TABLE Test;
 
 INSERT OVERWRITE DIRECTORY '/mostterrorpronecountry' select TargetCountry, count(Success) as most from test where Success = 1 group by TargetCountry order by most desc limit 10;
 
-#command to copy from hive to home directory
+#command to copy results from hive to home directory
 hadoop fs -copyToLocal /mostterrorpronecountry /home/adityagpt30
 
 2. Most terror prone city
